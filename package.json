@@ -1,0 +1,33 @@
+{
+  "name": "exam-preparation-app",
+  "version": "1.0.0",
+  "description": "Sınav Hazırlama Uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable --config.win.signAndEditExecutable=false"
+  },
+  "build": {
+    "appId": "com.exam.preparation",
+    "productName": "Sınav Hazırlama",
+    "asar": true,
+    "win": {
+      "target": "portable"
+    }
+  },
+  "keywords": [
+    "electron",
+    "exam",
+    "education"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "docx": "^8.5.0",
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

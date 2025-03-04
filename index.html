@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sınav Hazırlama Uygulaması</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+        }
+
+        .left-panel {
+            width: 40%;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            width: 60%;
+            padding: 20px;
+            background-color: #fff;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .question-pool-btn {
+            background-color: #2196F3;
+            margin-top: 20px;
+        }
+
+        .question-pool-btn:hover {
+            background-color: #1976D2;
+        }
+
+        .question-list {
+            margin-top: 20px;
+        }
+
+        .question-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .preview-container {
+            min-height: 500px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 4px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification.info { background-color: #2196F3; }
+        .notification.success { background-color: #4CAF50; }
+        .notification.warning { background-color: #FF9800; }
+        .notification.error { background-color: #F44336; }
+
+        .notification.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        /* Modal animations */
+        .modal-open {
+            opacity: 1;
+        }
+
+        .modal-close {
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Form styles */
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-secondary {
+            background-color: #757575;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <h2>Sınav Oluşturma</h2>
+        <div class="form-group">
+            <label for="schoolName">Okul Adı:</label>
+            <input type="text" id="schoolName" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="academicYear">Eğitim-Öğretim Yılı:</label>
+            <input type="text" id="academicYear" class="form-control" placeholder="2024-2025" value="2024-2025">
+        </div>
+        <div class="form-group">
+            <label for="lessonName">Ders Adı:</label>
+            <input type="text" id="lessonName" class="form-control" placeholder="FELSEFE" value="FELSEFE">
+        </div>
+        <div class="form-group">
+            <label for="classLevel">Sınıf Seviyesi</label>
+            <select id="classLevel">
+                <option value="">Seçiniz</option>
+                <option value="10">10. Sınıf</option>
+                <option value="11">11. Sınıf</option>
+                <option value="12">12. Sınıf</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="examType">Sınav Türü</label>
+            <select id="examType">
+                <option value="">Seçiniz</option>
+                <option value="1-1">1. Dönem 1. Yazılı</option>
+                <option value="1-2">1. Dönem 2. Yazılı</option>
+                <option value="2-1">2. Dönem 1. Yazılı</option>
+                <option value="2-2">2. Dönem 2. Yazılı</option>
+            </select>
+        </div>
+
+        <button onclick="createExam()">Sınav Oluştur</button>
+        <button onclick="openQuestionPool()" class="question-pool-btn">Soru Havuzu</button>
+
+        <div class="question-list" id="questionList">
+            <!-- Seçilen sorular burada listelenecek -->
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h2>Sınav Önizleme</h2>
+        <div class="preview-container" id="previewContainer">
+            <!-- Sınav önizlemesi burada gösterilecek -->
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
